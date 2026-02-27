@@ -1,5 +1,6 @@
 package com.sephora.technical_test.application.di
 
+import com.sephora.technical_test.BuildConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -28,7 +29,7 @@ val appModules = module {
             }
 
             install(DefaultRequest) {
-                url("")
+                url(BuildConfig.BASE_URL)
             }
 
             install(ContentNegotiation) {
