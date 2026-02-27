@@ -21,7 +21,7 @@ class SephoraTechnicalTestApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        // initKoin()
+        initKoin()
     }
 
     private fun initKoin() {
