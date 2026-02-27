@@ -1,4 +1,4 @@
-package com.rta.suhail.application.common.base.viewmodel
+package com.sephora.technical_test.application.base.viewmodel
 
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.ViewModel

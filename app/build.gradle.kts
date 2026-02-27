@@ -108,4 +108,6 @@ dependencies {
     implementation(libs.ktor.client.serialization)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.ktor.client.content.negotiation)
+    // navigation
+    implementation("androidx.navigation:navigation-compose:2.9.7")
 }

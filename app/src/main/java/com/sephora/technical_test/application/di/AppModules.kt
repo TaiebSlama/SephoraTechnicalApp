@@ -5,7 +5,9 @@ import com.sephora.technical_test.data.repositories.products.ProductsRepo
 import com.sephora.technical_test.data.repositories.products.ProductsRepoImpl
 import com.sephora.technical_test.domain.productsManager.ProductsManager
 import com.sephora.technical_test.domain.productsManager.ProductsManagerImpl
+import com.sephora.technical_test.presentation.features.productReview.ProductReviewViewModel
 import com.sephora.technical_test.presentation.features.products.ProductsViewModel
+import com.sephora.technical_test.presentation.features.splashScreen.AppSplashViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -59,20 +61,16 @@ val appModules = module {
 }
 
 val appReposModules = module {
-    single<ProductsRepo> {
-        ProductsRepoImpl(get())
-    }
+    single<ProductsRepo> { ProductsRepoImpl(get()) }
 }
 
 val appManagersModules = module {
-    single<ProductsManager> {
-        ProductsManagerImpl(get())
-    }
+    single<ProductsManager> { ProductsManagerImpl(get()) }
 }
 
 val appViewModels = module {
-    viewModel<ProductsViewModel> {
-        ProductsViewModel(get())
-    }
+    viewModel { AppSplashViewModel(get()) }
+    viewModel { ProductsViewModel(get()) }
+    viewModel { ProductReviewViewModel() }
 }
 

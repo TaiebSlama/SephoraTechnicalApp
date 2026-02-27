@@ -1,7 +1,7 @@
 package com.sephora.technical_test.presentation.features.products
 
 import androidx.lifecycle.viewModelScope
-import com.rta.suhail.application.common.base.viewmodel.BaseChannelViewModel
+import com.sephora.technical_test.application.base.viewmodel.BaseChannelViewModel
 import com.sephora.technical_test.data.helper.ApiResponse
 import com.sephora.technical_test.domain.productsManager.ProductsManager
 import kotlinx.coroutines.Dispatchers
