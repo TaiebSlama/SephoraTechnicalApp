@@ -9,7 +9,22 @@ android {
     compileSdk {
         version = release(36)
     }
-
+    signingConfigs {
+        create("store") {
+            storeFile =
+                file("${project.rootDir}/sephora.technical.keystore.jks")
+            keyAlias = "sephora"
+            storePassword = "sephora@2026"
+            keyPassword = "sephora@2026"
+        }
+        create("dev") {
+            storeFile =
+                file("${project.rootDir}/sephora.technical.dev.keystore.jks")
+            keyAlias = "sephora"
+            storePassword = "sephora@2026"
+            keyPassword = "sephora@2026"
+        }
+    }
     defaultConfig {
         applicationId = "com.sephora.technical_test"
         minSdk = 24
@@ -19,7 +34,21 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    productFlavors {
+        create("stag") {
+            signingConfig = signingConfigs.getByName("dev")
+            versionCode = 1
+            versionNameSuffix = "-stag"
+            versionName = "1.0.0"
+        }
 
+        create("prod") {
+            signingConfig = signingConfigs.getByName("store")
+            versionCode = 1
+            versionNameSuffix = "-prod"
+            versionName = "1.0.0"
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
