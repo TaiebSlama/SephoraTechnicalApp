@@ -16,6 +16,7 @@ import org.koin.core.context.stopKoin
  */
 class SephoraTechnicalTestApp : Application() {
 
+
     internal lateinit var koinApplication: KoinApplication
 
     override fun onCreate() {
