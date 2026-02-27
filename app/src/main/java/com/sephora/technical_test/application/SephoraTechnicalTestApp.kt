@@ -1,7 +1,10 @@
 package com.sephora.technical_test.application
 
 import android.app.Application
+import com.sephora.technical_test.application.di.appManagersModules
 import com.sephora.technical_test.application.di.appModules
+import com.sephora.technical_test.application.di.appReposModules
+import com.sephora.technical_test.application.di.appViewModels
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.KoinApplication
@@ -26,7 +29,12 @@ class SephoraTechnicalTestApp : Application() {
         koinApplication = startKoin {
             androidLogger()
             androidContext(this@SephoraTechnicalTestApp)
-            modules(appModules /*appViewModels, appManagers*/)
+            modules(
+                appModules,
+                appReposModules,
+                appManagersModules,
+                appViewModels
+            )
         }
     }
 

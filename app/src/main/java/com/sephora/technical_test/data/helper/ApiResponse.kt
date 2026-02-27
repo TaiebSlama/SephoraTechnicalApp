@@ -6,5 +6,5 @@ package com.sephora.technical_test.data.helper
  */
 sealed class ApiResponse<out T : Any> {
     data class Success<out T : Any>(val data: T) : ApiResponse<T>()
-    data class Error(val error: AppErrorModel) : ApiResponse<Nothing>()
+    data class Error(val cause: String) : ApiResponse<Nothing>()
 }

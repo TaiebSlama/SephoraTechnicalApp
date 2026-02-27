@@ -12,28 +12,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.sephora.technical_test.data.helper.RepositoryResponse
-import com.sephora.technical_test.data.helper.resolveError
-import com.sephora.technical_test.data.repositories.products.ProductsRepo
+import com.sephora.technical_test.data.helper.ApiResponse
+import com.sephora.technical_test.domain.productsManager.ProductsManager
 import com.sephora.technical_test.presentation.ui.theme.SEPHORA_Technical_TestTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.java.KoinJavaComponent.inject
 
 class MainActivity : ComponentActivity() {
-    val productRepo: ProductsRepo by inject(ProductsRepo::class.java)
+    val productRepo: ProductsManager by inject(ProductsManager::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.IO) {
-                    val response = productRepo.fetchProducts()
-                    when (response) {
-                        is RepositoryResponse.Success -> {
-                            Log.d("HttpRequestBuilder", response.body.toString())
-                        }
-
-                        else -> Log.d("HttpRequestBuilder", response.resolveError())
+                    when (val response = productRepo.fetchProductsList()) {
+                        is ApiResponse.Error -> Log.d("HttpRequestBuilder", response.cause)
+                        is ApiResponse.Success<*> -> Log.d(
+                            "HttpRequestBuilder",
+                            response.data.toString()
+                        )
                     }
                 }
             }

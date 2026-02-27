@@ -3,6 +3,8 @@ package com.sephora.technical_test.application.di
 import com.sephora.technical_test.BuildConfig
 import com.sephora.technical_test.data.repositories.products.ProductsRepo
 import com.sephora.technical_test.data.repositories.products.ProductsRepoImpl
+import com.sephora.technical_test.domain.productsManager.ProductsManager
+import com.sephora.technical_test.domain.productsManager.ProductsManagerImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -22,7 +24,6 @@ import java.util.concurrent.TimeUnit
  * Copyright (c) 2023. All rights reserved.
  */
 val appModules = module {
-
     single {
         HttpClient(Android) {
             install(Logging) {
@@ -53,9 +54,19 @@ val appModules = module {
 
         }
     }
+}
+
+val appReposModules = module {
     single<ProductsRepo> {
         ProductsRepoImpl(get())
     }
-
 }
+
+val appManagersModules = module {
+    single<ProductsManager> {
+        ProductsManagerImpl(get())
+    }
+}
+
+val appViewModels = module { }
 

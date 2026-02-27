@@ -83,34 +83,6 @@ sealed class RepositoryResponse<out T> {
     data class HttpServer(val code: Int, val error: AppErrorModel) : RepositoryResponse<Nothing>()
 }
 
-fun <T> RepositoryResponse<T>.resolveError(): String {
-    return try {
-        when (this) {
-            is RepositoryResponse.HttpClient -> error.msg()
-
-            is RepositoryResponse.HttpServer -> error.msg()
-
-            is RepositoryResponse.Success -> ""
-        }
-    } catch (_: Exception) {
-        "Unknown Error"
-    }
-}
-
-fun <T> RepositoryResponse<T>.toApiResponseError(): ApiResponse<Nothing> {
-    return try {
-        when (this) {
-            is RepositoryResponse.HttpClient -> ApiResponse.Error(error)
-
-            is RepositoryResponse.HttpServer -> ApiResponse.Error(error)
-
-            is RepositoryResponse.Success -> ApiResponse.Error(AppErrorModel.UnknownErrorModel)
-        }
-    } catch (_: Exception) {
-        ApiResponse.Error(AppErrorModel.UnknownErrorModel)
-    }
-}
-
 fun parseErrorResponse(response: String): AppErrorModel {
     return try {
         val json = Json { ignoreUnknownKeys = true }
