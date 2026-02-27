@@ -5,6 +5,7 @@ import com.sephora.technical_test.data.repositories.products.ProductsRepo
 import com.sephora.technical_test.data.repositories.products.ProductsRepoImpl
 import com.sephora.technical_test.domain.productsManager.ProductsManager
 import com.sephora.technical_test.domain.productsManager.ProductsManagerImpl
+import com.sephora.technical_test.presentation.features.products.ProductsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.DefaultRequest
@@ -16,6 +17,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import java.util.concurrent.TimeUnit
 
@@ -68,5 +70,9 @@ val appManagersModules = module {
     }
 }
 
-val appViewModels = module { }
+val appViewModels = module {
+    viewModel<ProductsViewModel> {
+        ProductsViewModel(get())
+    }
+}
 
