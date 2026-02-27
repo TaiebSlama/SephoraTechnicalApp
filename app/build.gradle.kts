@@ -34,19 +34,25 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    flavorDimensions.add("environment")
     productFlavors {
         create("stag") {
             signingConfig = signingConfigs.getByName("dev")
+            dimension = "environment"
             versionCode = 1
             versionNameSuffix = "-stag"
             versionName = "1.0.0"
+            // define base url
+            buildConfigField("String", "BASE_URL", "\"https://sephoraandroid.github.io/\"")
         }
 
         create("prod") {
             signingConfig = signingConfigs.getByName("store")
+            dimension = "environment"
             versionCode = 1
             versionNameSuffix = "-prod"
             versionName = "1.0.0"
+            buildConfigField("String", "BASE_URL", "\"https://sephoraandroid.github.io/\"")
         }
     }
     buildTypes {
@@ -62,11 +68,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        }
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
