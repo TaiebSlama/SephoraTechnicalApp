@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -70,9 +71,38 @@ fun ProductsScreen(viewModel: ProductsViewModel = koinViewModel()) {
             }
         }
     }
-    Column(modifier = Modifier.fillMaxSize()) {
-        SearchInputField(bindingModel)
-        ProductsState(viewModel, bindingModel)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            SearchInputField(bindingModel)
+            ProductsState(viewModel, bindingModel)
+        }
+        FloatButtonSorting(bindingModel)
+    }
+
+}
+
+@Composable
+private fun FloatButtonSorting(bindingModel: ProductsBindingModel) {
+    FloatingActionButton(
+        onClick = {
+            when (bindingModel.sorting.value) {
+                ReviewSortOption.BEST_TO_WORST -> bindingModel.sorting.value =
+                    ReviewSortOption.WORST_TO_BEST
+
+                ReviewSortOption.WORST_TO_BEST -> bindingModel.sorting.value =
+                    ReviewSortOption.BEST_TO_WORST
+            }
+        },
+        modifier = Modifier
+            .padding(16.dp)
+    ) {
+        Text(
+            text = bindingModel.sorting.value.description,
+            fontSize = 12.sp
+        )
     }
 }
 

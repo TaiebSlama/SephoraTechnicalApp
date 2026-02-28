@@ -8,9 +8,9 @@ import com.sephora.technical_test.data.repositories.products.payloads.ProductRes
  * Copyright (c) 2023. All rights reserved.
  */
 
-enum class ReviewSortOption {
-    BEST_TO_WORST,
-    WORST_TO_BEST
+enum class ReviewSortOption(val description: String) {
+    BEST_TO_WORST(description = "B → W"),
+    WORST_TO_BEST(description = "W → B")
 }
 
 class ProductsBindingModel {
