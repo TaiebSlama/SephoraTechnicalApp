@@ -250,7 +250,7 @@ private fun ReviewSection(
         Spacer(modifier = Modifier.height(4.dp))
         if (reviews != null && reviews.isNotEmpty()) {
             // Show all reviews only when expanded
-            if (showReview.value) {
+            AnimatedVisibility(visible = showReview.value) {
                 val reviewsSorted = reviews.sortedByDescending { it.rating }
                 Column {
                     reviewsSorted.forEach { review ->
