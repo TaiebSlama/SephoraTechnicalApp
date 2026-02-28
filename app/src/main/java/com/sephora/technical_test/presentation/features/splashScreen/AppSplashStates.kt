@@ -6,7 +6,7 @@ package com.sephora.technical_test.presentation.features.splashScreen
  */
 
 sealed class AppSplashStates {
-    data object Initial : AppSplashStates()
+    data object DataLoaded : AppSplashStates()
 }
 
 sealed class AppSplashEvents {

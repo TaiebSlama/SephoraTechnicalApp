@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.sephora.technical_test.application.base.navigation.NavigatorFlow
@@ -18,6 +19,7 @@ import com.sephora.technical_test.presentation.ui.theme.SEPHORA_Technical_TestTh
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             SEPHORA_Technical_TestTheme {
                 MainScreen()
@@ -37,7 +39,7 @@ private fun MainScreen() {
     NavHost(
         modifier = Modifier,
         navController = mainNavController,
-        startDestination = MainRoutes.Products.route
+        startDestination = MainRoutes.Splash.route
     ) {
         addHorizontalTransactionScreen(route = MainRoutes.Splash.route) {
             AppSplashScreen()

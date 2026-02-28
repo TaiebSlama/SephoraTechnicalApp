@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Main App Theme -->
     <style name="Theme.SEPHORA_Technical_Test" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash Theme -->
+    <style name="Theme.App.Splash" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">@color/white</item>
+
+        <!-- Remove icon by using transparent drawable -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.SEPHORA_Technical_Test
+        </item>
+
+    </style>
+
 </resources>
