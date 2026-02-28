@@ -5,8 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -21,17 +26,28 @@ import com.sephora.technical_test.application.base.navigation.NavigatorFlow
 import com.sephora.technical_test.application.base.navigation.addHorizontalTransactionScreen
 import com.sephora.technical_test.presentation.features.productReview.ProductReviewScreen
 import com.sephora.technical_test.presentation.features.products.ProductsScreen
-import com.sephora.technical_test.presentation.ui.theme.SEPHORA_Technical_TestTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen()
         setContent {
-            SEPHORA_Technical_TestTheme {
-                MainScreen()
-                FullScreenLoader()
+            // Scaffold to handle top/bottom bars if needed
+            Scaffold { paddingValues ->
+                // Respect safe area / padding from Scaffold
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                        .padding(WindowInsets.safeDrawing.asPaddingValues())
+                ) {
+                    // Main content
+                    MainScreen()
+                    // Full-screen loader overlay
+                    FullScreenLoader()
+                }
             }
+
         }
     }
 }
