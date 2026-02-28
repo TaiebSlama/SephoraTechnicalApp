@@ -21,6 +21,7 @@ class ProductsViewModel(
     override fun initStates() {
         viewModelScope.launch(Dispatchers.IO) {
             stateChannel.send(ProductsStates.LoadingProducts)
+            productManager.fetchProductsList()
             productManager.products.collect {
                 stateChannel.send(ProductsStates.ProductsLoaded(it))
             }

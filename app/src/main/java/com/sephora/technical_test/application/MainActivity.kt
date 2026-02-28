@@ -13,7 +13,6 @@ import com.sephora.technical_test.application.base.navigation.NavigatorFlow
 import com.sephora.technical_test.application.base.navigation.addHorizontalTransactionScreen
 import com.sephora.technical_test.presentation.features.productReview.ProductReviewScreen
 import com.sephora.technical_test.presentation.features.products.ProductsScreen
-import com.sephora.technical_test.presentation.features.splashScreen.AppSplashScreen
 import com.sephora.technical_test.presentation.ui.theme.SEPHORA_Technical_TestTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,12 +38,10 @@ private fun MainScreen() {
     NavHost(
         modifier = Modifier,
         navController = mainNavController,
-        startDestination = MainRoutes.Splash.route
+        startDestination = MainRoutes.Products.route
     ) {
-        addHorizontalTransactionScreen(route = MainRoutes.Splash.route) {
-            AppSplashScreen()
-        }
-        addHorizontalTransactionScreen(route = MainRoutes.Products.route) {
+
+    addHorizontalTransactionScreen(route = MainRoutes.Products.route) {
             ProductsScreen()
         }
         addHorizontalTransactionScreen(route = MainRoutes.ProductReview.route) {

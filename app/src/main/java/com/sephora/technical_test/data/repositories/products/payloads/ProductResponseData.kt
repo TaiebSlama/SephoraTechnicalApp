@@ -15,7 +15,7 @@ data class ProductResponseData(
     @SerialName("is_productSet")
     val isProductSet: Boolean?,
     @SerialName("is_special_brand")
-    val isSpecialBrand: Boolean?,
+    val isSpecialBrand: Boolean = false,
     @SerialName("price")
     val price: Double?,
     @SerialName("product_id")

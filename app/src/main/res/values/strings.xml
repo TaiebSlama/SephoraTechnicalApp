@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">SEPHORA_Technical_Test</string>
+    <string name="app_name">SEPHORA</string>
+    <string name="sophera_is_getting_ready_products_will_be_available_soon">Sophera is getting ready! Products will be available soon.</string>
 </resources>
