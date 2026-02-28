@@ -1,7 +1,6 @@
 package com.sephora.technical_test.presentation.features.products
 
 import androidx.compose.runtime.mutableStateOf
-import com.sephora.technical_test.data.helper.AsyncDataLoader
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
 
 /**
@@ -10,6 +9,6 @@ import com.sephora.technical_test.data.repositories.products.payloads.ProductRes
  */
 
 class ProductsBindingModel {
-    val products =
-        mutableStateOf<AsyncDataLoader<List<ProductResponseData>>>(AsyncDataLoader.Loading)
+    val inputSearch = mutableStateOf("")
+    val products = mutableStateOf<List<ProductResponseData>>(emptyList())
 }

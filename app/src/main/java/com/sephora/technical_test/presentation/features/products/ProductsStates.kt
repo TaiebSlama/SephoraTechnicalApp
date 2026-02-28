@@ -10,7 +10,6 @@ import com.sephora.technical_test.data.repositories.products.payloads.ProductRes
 sealed class ProductsStates {
     data object LoadingProducts : ProductsStates()
     data class ProductsLoaded(val data: List<ProductResponseData>) : ProductsStates()
-    data class FailToLoadProducts(val cause: String) : ProductsStates()
 }
 
 sealed class ProductsEvents {

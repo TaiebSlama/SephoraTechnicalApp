@@ -3,9 +3,17 @@ package com.sephora.technical_test.application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SEPHORA_Technical_TestTheme {
                 MainScreen()
+                FullScreenLoader()
             }
         }
     }
@@ -41,7 +50,7 @@ private fun MainScreen() {
         startDestination = MainRoutes.Products.route
     ) {
 
-    addHorizontalTransactionScreen(route = MainRoutes.Products.route) {
+        addHorizontalTransactionScreen(route = MainRoutes.Products.route) {
             ProductsScreen()
         }
         addHorizontalTransactionScreen(route = MainRoutes.ProductReview.route) {
@@ -49,4 +58,21 @@ private fun MainScreen() {
         }
 
     }
+}
+
+
+val isLoading = mutableStateOf(false)
+
+@Composable
+private fun FullScreenLoader() {
+    if (isLoading.value)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Black)
+                .alpha(0.5f),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
 }

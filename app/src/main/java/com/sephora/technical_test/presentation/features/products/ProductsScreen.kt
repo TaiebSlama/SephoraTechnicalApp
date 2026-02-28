@@ -19,15 +19,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.sephora.technical_test.R
-import com.sephora.technical_test.data.helper.AsyncDataLoader
+import com.sephora.technical_test.application.isLoading
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -72,38 +74,35 @@ fun ProductsScreen(viewModel: ProductsViewModel = koinViewModel()) {
 
 @Composable
 private fun ColumnScope.ProductsState(bindingModel: ProductsBindingModel) {
-    // case loading products
-    AnimatedVisibility(
-        visible = bindingModel.products.value is AsyncDataLoader.Loading
-    ) {
-        FullScreenLoader()
-    }
     // case products loaded fail or empty
-    AnimatedVisibility(
-        visible = bindingModel.products.value is AsyncDataLoader.Finish &&
-                (bindingModel.products.value as AsyncDataLoader.Finish<List<ProductResponseData>>).data.isEmpty()
-    ) {
+    AnimatedVisibility(visible = bindingModel.products.value.isEmpty()) {
         NoProductsFound()
     }
     // case dara retrieved
-    AnimatedVisibility(
-        visible = bindingModel.products.value is AsyncDataLoader.Finish &&
-                (bindingModel.products.value as AsyncDataLoader.Finish<List<ProductResponseData>>).data.isNotEmpty()
-    ) {
+    AnimatedVisibility(visible = bindingModel.products.value.isNotEmpty()) {
         ProductList(bindingModel)
     }
 }
 
 @Composable
 private fun ProductList(bindingModel: ProductsBindingModel) {
-    val list =
-        (bindingModel.products.value as AsyncDataLoader.Finish<List<ProductResponseData>>).data
+    val list = remember {
+        derivedStateOf {
+            if (bindingModel.inputSearch.value.isNotEmpty())
+                bindingModel.products.value.filter {
+                    it.productName?.lowercase()
+                        ?.contains(bindingModel.inputSearch.value.lowercase()) ?: false
+                }
+            else
+                bindingModel.products.value
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        list.map {
+        list.value.map {
             ProductItem(it) {}
         }
     }
@@ -138,7 +137,7 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
             ) {
                 // Brand
                 Text(
-                    text = product.cBrand.toString(),
+                    text = product.cBrand?.name.toString(),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.Gray
@@ -170,7 +169,7 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
 
                     // Price
                     Text(
-                        text = "${product.price} AED",
+                        text = "${product.price} EURO",
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFE91E63)
@@ -226,29 +225,35 @@ private fun NoProductsFound() {
     }
 }
 
-@Composable
-private fun FullScreenLoader() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
 
 @Composable
 private fun SearchInputField(binding: ProductsBindingModel) {
-
+    OutlinedTextField(
+        value = binding.inputSearch.value,       // current text from your binding model
+        onValueChange = { newValue ->
+            binding.inputSearch.value = newValue
+        },
+        placeholder = { Text("Search products...") }, // hint text
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = "Search Icon"
+            )
+        },
+        singleLine = true,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    )
 }
 
 private fun handleStates(bindingModel: ProductsBindingModel, it: ProductsStates) {
     when (it) {
-        ProductsStates.LoadingProducts -> bindingModel.products.value = AsyncDataLoader.Loading
-        is ProductsStates.FailToLoadProducts -> bindingModel.products.value =
-            AsyncDataLoader.LoaderFailure
+        ProductsStates.LoadingProducts -> isLoading.value = true
 
-        is ProductsStates.ProductsLoaded -> bindingModel.products.value =
-            AsyncDataLoader.Finish(it.data)
+        is ProductsStates.ProductsLoaded -> {
+            isLoading.value = false
+            bindingModel.products.value = it.data
+        }
     }
 }
