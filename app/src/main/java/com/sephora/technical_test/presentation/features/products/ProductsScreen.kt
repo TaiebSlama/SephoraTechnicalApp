@@ -147,6 +147,7 @@ private fun ProductList(
     ) {
         list.value.map {
             ProductItem(
+                bindingModel = bindingModel,
                 viewModel = viewModel,
                 it
             ) {}
@@ -156,6 +157,7 @@ private fun ProductList(
 
 @Composable
 fun ProductItem(
+    bindingModel: ProductsBindingModel,
     viewModel: ProductsViewModel,
     product: ProductResponseData, onSelect: () -> Unit
 ) {
@@ -209,7 +211,10 @@ fun ProductItem(
                     color = Color.DarkGray
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                ReviewSection(product = product, viewModel = viewModel)
+                ReviewSection(
+                    bindingModel = bindingModel,
+                    product = product, viewModel = viewModel
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -242,6 +247,7 @@ fun ProductItem(
 
 @Composable
 private fun ReviewSection(
+    bindingModel: ProductsBindingModel,
     product: ProductResponseData,
     viewModel: ProductsViewModel
 ) {
@@ -281,7 +287,10 @@ private fun ReviewSection(
         if (reviews != null && reviews.isNotEmpty()) {
             // Show all reviews only when expanded
             AnimatedVisibility(visible = showReview.value) {
-                val reviewsSorted = reviews.sortedByDescending { it.rating }
+                val reviewsSorted = when (bindingModel.sorting.value) {
+                    ReviewSortOption.BEST_TO_WORST -> reviews.sortedByDescending { it.rating }
+                    ReviewSortOption.WORST_TO_BEST -> reviews.sortedBy { it.rating }
+                }
                 Column {
                     reviewsSorted.forEach { review ->
                         Row(
