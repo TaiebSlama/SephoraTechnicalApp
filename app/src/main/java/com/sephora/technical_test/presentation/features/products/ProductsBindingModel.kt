@@ -8,7 +8,13 @@ import com.sephora.technical_test.data.repositories.products.payloads.ProductRes
  * Copyright (c) 2023. All rights reserved.
  */
 
+enum class ReviewSortOption {
+    BEST_TO_WORST,
+    WORST_TO_BEST
+}
+
 class ProductsBindingModel {
     val inputSearch = mutableStateOf("")
+    val sorting = mutableStateOf<ReviewSortOption>(ReviewSortOption.BEST_TO_WORST)
     val products = mutableStateOf<List<ProductResponseData>>(emptyList())
 }

@@ -5,7 +5,6 @@ import com.sephora.technical_test.data.repositories.products.ProductsRepo
 import com.sephora.technical_test.data.repositories.products.ProductsRepoImpl
 import com.sephora.technical_test.domain.productsManager.ProductsManager
 import com.sephora.technical_test.domain.productsManager.ProductsManagerImpl
-import com.sephora.technical_test.presentation.features.productReview.ProductReviewViewModel
 import com.sephora.technical_test.presentation.features.products.ProductsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -69,6 +68,5 @@ val appManagersModules = module {
 
 val appViewModels = module {
     viewModel { ProductsViewModel(get()) }
-    viewModel { ProductReviewViewModel() }
 }
 

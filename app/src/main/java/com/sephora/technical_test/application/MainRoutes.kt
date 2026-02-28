@@ -10,6 +10,5 @@ import com.sephora.technical_test.application.base.navigation.BaseRoute
 sealed class MainRoutes(route: String) : BaseRoute(route = route) {
 
     data object Products : MainRoutes(route = "Products")
-    data object ProductReview : MainRoutes(route = "ProductReview")
 
 }
