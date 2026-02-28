@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -30,10 +31,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -46,6 +49,7 @@ import coil.compose.AsyncImage
 import com.sephora.technical_test.R
 import com.sephora.technical_test.application.isLoading
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
+import com.sephora.technical_test.data.repositories.products.payloads.ProductReviewData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
@@ -68,24 +72,33 @@ fun ProductsScreen(viewModel: ProductsViewModel = koinViewModel()) {
     }
     Column(modifier = Modifier.fillMaxSize()) {
         SearchInputField(bindingModel)
-        ProductsState(bindingModel)
+        ProductsState(viewModel, bindingModel)
     }
 }
 
 @Composable
-private fun ColumnScope.ProductsState(bindingModel: ProductsBindingModel) {
+private fun ColumnScope.ProductsState(
+    viewModel: ProductsViewModel,
+    bindingModel: ProductsBindingModel
+) {
     // case products loaded fail or empty
     AnimatedVisibility(visible = bindingModel.products.value.isEmpty()) {
         NoProductsFound()
     }
     // case dara retrieved
     AnimatedVisibility(visible = bindingModel.products.value.isNotEmpty()) {
-        ProductList(bindingModel)
+        ProductList(
+            viewModel = viewModel,
+            bindingModel
+        )
     }
 }
 
 @Composable
-private fun ProductList(bindingModel: ProductsBindingModel) {
+private fun ProductList(
+    viewModel: ProductsViewModel,
+    bindingModel: ProductsBindingModel
+) {
     val list = remember {
         derivedStateOf {
             if (bindingModel.inputSearch.value.isNotEmpty())
@@ -103,13 +116,19 @@ private fun ProductList(bindingModel: ProductsBindingModel) {
             .verticalScroll(rememberScrollState())
     ) {
         list.value.map {
-            ProductItem(it) {}
+            ProductItem(
+                viewModel = viewModel,
+                it
+            ) {}
         }
     }
 }
 
 @Composable
-fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
+fun ProductItem(
+    viewModel: ProductsViewModel,
+    product: ProductResponseData, onSelect: () -> Unit
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -143,7 +162,6 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
                     color = Color.Gray
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-
                 // Product Name
                 Text(
                     text = product.productName.toString(),
@@ -151,7 +169,6 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-
                 Spacer(modifier = Modifier.height(6.dp))
                 // Description
                 Text(
@@ -161,12 +178,11 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
                     overflow = TextOverflow.Ellipsis,
                     color = Color.DarkGray
                 )
-
                 Spacer(modifier = Modifier.height(8.dp))
+                ReviewSection(product = product, viewModel = viewModel)
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     // Price
                     Text(
                         text = "${product.price} EURO",
@@ -174,9 +190,7 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFFE91E63)
                     )
-
                     Spacer(modifier = Modifier.weight(1f))
-
                     if (product.isSpecialBrand) {
                         Text(
                             text = "SPECIAL",
@@ -191,6 +205,88 @@ fun ProductItem(product: ProductResponseData, onSelect: () -> Unit) {
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReviewSection(
+    product: ProductResponseData,
+    viewModel: ProductsViewModel
+) {
+    val showReview = remember { mutableStateOf(false) }
+    val reviewState = remember { mutableStateOf<ProductReviewData?>(ProductReviewData()) }
+    LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            viewModel.handleEvents(ProductsEvents.FetchProductReview(product.productId ?: -1) {
+                reviewState.value = it
+            })
+        }
+    }
+    val reviews = reviewState.value?.reviews
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showReview.value = !showReview.value }
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Reviews",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Medium
+            )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = if (showReview.value) "Collapse" else "Expand",
+                modifier = Modifier
+                    .size(24.dp)
+                    .rotate(if (showReview.value) 180f else 0f)
+            )
+        }
+        Spacer(modifier = Modifier.height(4.dp))
+        if (reviews != null && reviews.isNotEmpty()) {
+            // Show all reviews only when expanded
+            if (showReview.value) {
+                val reviewsSorted = reviews.sortedByDescending { it.rating }
+                Column {
+                    reviewsSorted.forEach { review ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                review.name?.let {
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.labelSmall,
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Gray
+                                    )
+                                }
+
+                                Text(
+                                    text = review.text.orEmpty(),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.DarkGray
+                                )
+                            }
+
+                            review.rating?.let {
+                                Text(
+                                    text = "★ $it",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFFFFC107),
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }

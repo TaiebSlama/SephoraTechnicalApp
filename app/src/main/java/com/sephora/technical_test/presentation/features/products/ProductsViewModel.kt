@@ -2,6 +2,7 @@ package com.sephora.technical_test.presentation.features.products
 
 import androidx.lifecycle.viewModelScope
 import com.sephora.technical_test.application.base.viewmodel.BaseChannelViewModel
+import com.sephora.technical_test.application.isLoading
 import com.sephora.technical_test.domain.productsManager.ProductsManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -30,7 +31,15 @@ class ProductsViewModel(
 
     override fun handleEvents(viewEvent: ProductsEvents) {
         when (viewEvent) {
-            ProductsEvents.Event1 -> {}
+            is ProductsEvents.FetchProductReview -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    isLoading.value = true
+                    val reviewsResponse = productManager.fetchProductReviewsByID(viewEvent.id)
+                    isLoading.value = false
+                    viewEvent.reviews(reviewsResponse)
+                }
+
+            }
         }
     }
 

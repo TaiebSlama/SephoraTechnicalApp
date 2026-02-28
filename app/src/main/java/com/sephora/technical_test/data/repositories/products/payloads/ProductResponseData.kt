@@ -23,3 +23,11 @@ data class ProductResponseData(
     @SerialName("product_name")
     val productName: String?
 )
+
+@Serializable
+data class ImagesUrl(
+    @SerialName("large")
+    val large: String?,
+    @SerialName("small")
+    val small: String?
+)

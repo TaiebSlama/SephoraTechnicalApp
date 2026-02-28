@@ -2,6 +2,7 @@ package com.sephora.technical_test.domain.productsManager
 
 import com.sephora.technical_test.data.helper.ApiResponse
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
+import com.sephora.technical_test.data.repositories.products.payloads.ProductReviewData
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -16,5 +17,10 @@ interface ProductsManager {
      * [ProductsManagerImpl.fetchProductsList]
      * */
     suspend fun fetchProductsList(): ApiResponse<List<ProductResponseData>>
+
+    /**
+     * [ProductsManagerImpl.fetchProductReviewsByID]
+     * */
+    suspend fun fetchProductReviewsByID(id: Int): ProductReviewData?
 
 }

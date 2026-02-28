@@ -1,6 +1,7 @@
 package com.sephora.technical_test.presentation.features.products
 
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
+import com.sephora.technical_test.data.repositories.products.payloads.ProductReviewData
 
 /**
  * Created by taieb.slama on 28/02/2026 .
@@ -13,5 +14,6 @@ sealed class ProductsStates {
 }
 
 sealed class ProductsEvents {
-    data object Event1 : ProductsEvents()
+    data class FetchProductReview(val id: Int, val reviews: (ProductReviewData?) -> Unit) :
+        ProductsEvents()
 }

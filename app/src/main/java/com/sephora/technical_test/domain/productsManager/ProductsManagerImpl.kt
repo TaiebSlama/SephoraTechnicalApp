@@ -4,6 +4,7 @@ import com.sephora.technical_test.data.helper.ApiResponse
 import com.sephora.technical_test.data.helper.RepositoryResponse
 import com.sephora.technical_test.data.repositories.products.ProductsRepo
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
+import com.sephora.technical_test.data.repositories.products.payloads.ProductReviewData
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
@@ -27,6 +28,20 @@ class ProductsManagerImpl(
             is RepositoryResponse.Success -> {
                 products.emit(data.body)
                 ApiResponse.Success(data.body)
+            }
+        }
+    }
+
+    /**
+     * [ProductsManager.fetchProductReviewsByID]
+     * */
+    override suspend fun fetchProductReviewsByID(id: Int): ProductReviewData? {
+        return when (val data = productRepo.fetchProductsReviews()) {
+            is RepositoryResponse.HttpClient -> null
+            is RepositoryResponse.HttpServer -> null
+            is RepositoryResponse.Success -> {
+                val reviews = data.body.find { it.productId == id }
+                reviews
             }
         }
     }

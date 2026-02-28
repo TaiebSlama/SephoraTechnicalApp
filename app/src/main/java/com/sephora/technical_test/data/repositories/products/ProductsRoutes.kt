@@ -7,5 +7,6 @@ package com.sephora.technical_test.data.repositories.products
 object ProductsRoutes {
 
     const val GET_PRODUCTS_LIST = "testProject/items.json"
+    const val GET_PRODUCTS_REVIEWS = "testProject/reviews.json"
 
 }
