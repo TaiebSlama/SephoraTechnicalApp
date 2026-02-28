@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +20,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -40,14 +38,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.sephora.technical_test.R
 import com.sephora.technical_test.application.isLoading
 import com.sephora.technical_test.data.repositories.products.payloads.ProductResponseData
 import com.sephora.technical_test.data.repositories.products.payloads.ProductReviewData
@@ -77,7 +72,7 @@ fun ProductsScreen(viewModel: ProductsViewModel = koinViewModel()) {
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             SearchInputField(bindingModel)
-            ProductsState(viewModel, bindingModel)
+            ProductList(viewModel = viewModel, bindingModel = bindingModel)
         }
         FloatButtonSorting(bindingModel)
     }
@@ -102,24 +97,6 @@ private fun FloatButtonSorting(bindingModel: ProductsBindingModel) {
         Text(
             text = bindingModel.sorting.value.description,
             fontSize = 12.sp
-        )
-    }
-}
-
-@Composable
-private fun ColumnScope.ProductsState(
-    viewModel: ProductsViewModel,
-    bindingModel: ProductsBindingModel
-) {
-    // case products loaded fail or empty
-    AnimatedVisibility(visible = bindingModel.products.value.isEmpty()) {
-        NoProductsFound()
-    }
-    // case dara retrieved
-    AnimatedVisibility(visible = bindingModel.products.value.isNotEmpty()) {
-        ProductList(
-            viewModel = viewModel,
-            bindingModel
         )
     }
 }
@@ -150,7 +127,7 @@ private fun ProductList(
                 bindingModel = bindingModel,
                 viewModel = viewModel,
                 it
-            ) {}
+            )
         }
     }
 }
@@ -159,13 +136,12 @@ private fun ProductList(
 fun ProductItem(
     bindingModel: ProductsBindingModel,
     viewModel: ProductsViewModel,
-    product: ProductResponseData, onSelect: () -> Unit
+    product: ProductResponseData
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable { onSelect() },
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -330,36 +306,6 @@ private fun ReviewSection(
         }
     }
 }
-
-@Composable
-private fun NoProductsFound() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.ShoppingCart,
-                contentDescription = null,
-                tint = Color.Gray,
-                modifier = Modifier.size(64.dp)
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = stringResource(R.string.sophera_is_getting_ready_products_will_be_available_soon),
-                color = Color.Gray,
-                fontSize = 18.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Medium
-            )
-        }
-    }
-}
-
 
 @Composable
 private fun SearchInputField(binding: ProductsBindingModel) {
